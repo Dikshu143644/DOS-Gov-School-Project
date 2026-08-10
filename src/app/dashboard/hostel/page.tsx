@@ -82,7 +82,7 @@ export default function ResidentialOperationsDashboard() {
           <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/20">
             <div>
               <h3 className="text-lg font-bold text-white">Daily Mess Check-in</h3>
-              <p className="text-xs text-white/50">Today's Menu: Poha (Breakfast), Dal Rice (Lunch)</p>
+              <p className="text-xs text-white/50">Today&apos;s Menu: Poha (Breakfast), Dal Rice (Lunch)</p>
             </div>
             <div className="text-right">
                <div className="text-2xl font-bold text-green-400">342</div>
