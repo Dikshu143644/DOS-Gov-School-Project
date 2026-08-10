@@ -1,0 +1,638 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  platform_admin
+  principal
+  clerk
+  class_teacher
+  subject_teacher
+  primary_teacher
+  warden
+  peon
+  applicant
+  student
+  parent
+  guest_auditor
+}
+
+enum ApplicationStatus {
+  draft
+  submitted
+  under_review
+  documents_required
+  document_verification
+  teacher_verification
+  principal_review
+  smc_review
+  approved
+  rejected
+  admission_confirmed
+}
+
+enum ApprovalStatus {
+  draft
+  pending
+  changes_requested
+  approved
+  rejected
+  published
+  archived
+}
+
+enum ApprovalType {
+  content
+  document
+  event
+  notice
+  letter
+  website
+}
+
+enum DivisionCode {
+  DS_B
+  DS_G
+  H_B
+  H_G
+}
+
+enum ResidenceType {
+  day_scholar
+  hostel
+}
+
+enum GenderSection {
+  boys
+  girls
+}
+
+enum SessionRiskLevel {
+  normal
+  suspicious
+  read_only
+  blocked
+}
+
+enum AadhaarVerifyStatus {
+  mock_pending
+  mock_verified
+  mock_failed
+  production_pending
+  production_verified
+  production_failed
+}
+
+enum DocumentScanStatus {
+  uploaded
+  scanning
+  clean
+  infected
+  rejected
+}
+
+enum BiometricEventType {
+  attendance
+  mess_checkin
+  hostel_gate
+  mock
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  phone         String?   @unique
+  passwordHash  String?
+  fullName      String
+  fullNameMr    String?
+  roles         UserRoleAssignment[]
+  emailVerified Boolean   @default(false)
+  phoneVerified Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  staff         Staff?
+  student       Student?
+  sessions      Session[]
+  auditLogs     AuditLog[] @relation("AuditActor")
+  applications  Application[] @relation("ApplicantUser")
+  otpChallenges OtpChallenge[]
+  messagesSent  Message[] @relation("MessageSender")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model UserRoleAssignment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      UserRole
+  validFrom DateTime @default(now())
+  validUntil DateTime?
+  createdAt DateTime @default(now())
+  @@unique([userId, role])
+}
+
+model Session {
+  id           String           @id @default(cuid())
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshHash  String
+  ipAddress    String?
+  userAgent    String?
+  deviceId     String?
+  riskLevel    SessionRiskLevel @default(normal)
+  isRevoked    Boolean          @default(false)
+  lastSeenAt   DateTime         @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime         @default(now())
+}
+
+model OtpChallenge {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  target    String
+  channel   String
+  codeHash  String
+  purpose   String
+  attempts  Int      @default(0)
+  verified  Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation("AuditActor", fields: [actorId], references: [id])
+  action     String
+  resource   String
+  resourceId String?
+  oldValue   Json?
+  newValue   Json?
+  ipAddress  String?
+  userAgent  String?
+  sessionId  String?
+  result     String   @default("success")
+  createdAt  DateTime @default(now())
+  @@index([createdAt])
+  @@index([actorId])
+}
+
+model SecurityEvent {
+  id          String   @id @default(cuid())
+  type        String
+  severity    String
+  userId      String?
+  description String
+  metadata    Json?
+  ipAddress   String?
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model FeatureFlag {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  name        String
+  description String?
+  enabled     Boolean  @default(false)
+  config      Json?
+  updatedAt   DateTime @updatedAt
+}
+
+model IpWhitelist {
+  id          String   @id @default(cuid())
+  label       String
+  cidr        String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model AcademicYear {
+  id        String   @id @default(cuid())
+  label     String   @unique
+  startDate DateTime
+  endDate   DateTime
+  isCurrent Boolean  @default(false)
+  enrollments Enrollment[]
+  assignments TeacherAssignment[]
+  applications Application[]
+}
+
+model Student {
+  id           String   @id @default(cuid())
+  userId       String?  @unique
+  user         User?    @relation(fields: [userId], references: [id])
+  studentCode  String   @unique
+  firstName    String
+  lastName     String
+  firstNameMr  String?
+  lastNameMr   String?
+  dateOfBirth  DateTime
+  gender       String
+  guardians    Guardian[]
+  enrollments  Enrollment[]
+  documents    Document[]
+  attendance   AttendanceRecord[]
+  residential  ResidentialAssignment[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Guardian {
+  id           String  @id @default(cuid())
+  studentId    String
+  student      Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  name         String
+  relation     String
+  phone        String?
+  email        String?
+  isPrimary    Boolean @default(false)
+}
+
+model Enrollment {
+  id             String       @id @default(cuid())
+  studentId      String
+  student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  standard       Int
+  stream         String?
+  divisionCode   DivisionCode
+  classTeacherId String?
+  classTeacher   Staff?       @relation(fields: [classTeacherId], references: [id])
+  createdAt      DateTime     @default(now())
+  @@unique([studentId, academicYearId])
+}
+
+model Application {
+  id              String            @id @default(cuid())
+  applicationCode String            @unique
+  applicantUserId String?
+  applicantUser   User?             @relation("ApplicantUser", fields: [applicantUserId], references: [id])
+  academicYearId  String
+  academicYear    AcademicYear      @relation(fields: [academicYearId], references: [id])
+  status          ApplicationStatus @default(draft)
+  studentData     Json
+  parentData      Json?
+  addressData     Json?
+  standard        Int
+  stream          String?
+  divisionCode    DivisionCode?
+  residenceType   ResidenceType?
+  genderSection   GenderSection?
+  aadhaarRef      String?
+  aadhaarStatus   AadhaarVerifyStatus?
+  submittedAt     DateTime?
+  documents       ApplicationDocument[]
+  statusHistory   ApplicationStatusHistory[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model ApplicationStatusHistory {
+  id            String            @id @default(cuid())
+  applicationId String
+  application   Application       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  status        ApplicationStatus
+  note          String?
+  changedById   String?
+  createdAt     DateTime          @default(now())
+}
+
+model ApplicationDocument {
+  id            String             @id @default(cuid())
+  applicationId String
+  application   Application        @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  docType       String
+  fileName      String
+  fileKey       String
+  mimeType      String
+  sizeBytes     Int
+  scanStatus    DocumentScanStatus @default(uploaded)
+  createdAt     DateTime           @default(now())
+}
+
+model AadhaarVerification {
+  id              String              @id @default(cuid())
+  applicationId   String?
+  aadhaarLast4    String?
+  mode            String              @default("mock")
+  otpStatus       AadhaarVerifyStatus @default(mock_pending)
+  selfieStatus    AadhaarVerifyStatus @default(mock_pending)
+  faceMatchScore  Float?
+  providerRef     String?
+  metadata        Json?
+  verifiedAt      DateTime?
+  createdAt       DateTime            @default(now())
+}
+
+model Staff {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  employeeCode String   @unique
+  designation  String
+  designationMr String?
+  department   String?
+  subjects     String[]
+  phone        String?
+  joinedAt     DateTime?
+  assignments  TeacherAssignment[]
+  enrollments  Enrollment[]
+  createdAt    DateTime @default(now())
+}
+
+model TeacherAssignment {
+  id             String       @id @default(cuid())
+  staffId        String
+  staff          Staff        @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id])
+  standard       Int?
+  divisionCode   DivisionCode?
+  subject        String?
+  isClassTeacher Boolean      @default(false)
+  validFrom      DateTime     @default(now())
+  validUntil     DateTime?
+}
+
+model Document {
+  id          String             @id @default(cuid())
+  studentId   String?
+  student     Student?           @relation(fields: [studentId], references: [id])
+  ownerType   String
+  ownerId     String
+  docType     String
+  fileName    String
+  fileKey     String
+  mimeType    String
+  sizeBytes   Int
+  scanStatus  DocumentScanStatus @default(uploaded)
+  version     Int                @default(1)
+  verified    Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+}
+
+model AttendanceRecord {
+  id        String   @id @default(cuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  date      DateTime @db.Date
+  status    String
+  type      String   @default("academic")
+  markedById String?
+  createdAt DateTime @default(now())
+  @@unique([studentId, date, type])
+}
+
+model ApprovalRequest {
+  id          String         @id @default(cuid())
+  type        ApprovalType
+  title       String
+  titleMr     String?
+  description String?
+  payload     Json?
+  fileKey     String?
+  status      ApprovalStatus @default(pending)
+  submitterId String
+  reviewerId  String?
+  publishedAt DateTime?
+  actions     ApprovalAction[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ApprovalAction {
+  id        String          @id @default(cuid())
+  requestId String
+  request   ApprovalRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actorId   String
+  action    String
+  comment   String?
+  createdAt DateTime        @default(now())
+}
+
+model Delegation {
+  id          String   @id @default(cuid())
+  createdById String
+  delegateId  String
+  permissions String[]
+  startsAt    DateTime
+  endsAt      DateTime
+  isActive    Boolean  @default(true)
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
+}
+
+model Notice {
+  id          String    @id @default(cuid())
+  title       String
+  titleMr     String?
+  body        String
+  category    String
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  fileKey     String?
+  approvalId  String?
+  createdAt   DateTime  @default(now())
+}
+
+model EventItem {
+  id          String    @id @default(cuid())
+  title       String
+  titleMr     String?
+  description String?
+  eventDate   DateTime?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  mediaKeys   String[]
+  approvalId  String?
+  createdAt   DateTime  @default(now())
+}
+
+model HostelWing {
+  id        String @id @default(cuid())
+  code      String @unique
+  name      String
+  gender    GenderSection
+  wardenId  String?
+  capacity  Int
+  rooms     Room[]
+}
+
+model Room {
+  id       String     @id @default(cuid())
+  wingId   String
+  wing     HostelWing @relation(fields: [wingId], references: [id], onDelete: Cascade)
+  number   String
+  floor    Int
+  capacity Int
+  beds     Bed[]
+  @@unique([wingId, number])
+}
+
+model Bed {
+  id     String  @id @default(cuid())
+  roomId String
+  room   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  label  String
+  assignments ResidentialAssignment[]
+  @@unique([roomId, label])
+}
+
+model ResidentialAssignment {
+  id        String    @id @default(cuid())
+  studentId String
+  student   Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  bedId     String
+  bed       Bed       @relation(fields: [bedId], references: [id])
+  startsAt  DateTime  @default(now())
+  endsAt    DateTime?
+}
+
+model MessMeal {
+  id       String   @id @default(cuid())
+  date     DateTime @db.Date
+  mealType String
+  menu     Json
+  served   Int      @default(0)
+  target   Int      @default(500)
+}
+
+model MessCheckIn {
+  id        String   @id @default(cuid())
+  studentId String
+  mealType  String
+  date      DateTime @db.Date
+  method    String   @default("manual")
+  createdAt DateTime @default(now())
+}
+
+model NightCheck {
+  id          String   @id @default(cuid())
+  date        DateTime @db.Date
+  present     Int
+  total       Int
+  exceptions  Json?
+  wardenSign  String?
+  createdAt   DateTime @default(now())
+}
+
+model VisitorLog {
+  id           String   @id @default(cuid())
+  visitorName  String
+  studentRef   String
+  relation     String
+  timeIn       DateTime
+  timeOut      DateTime?
+  status       String   @default("active")
+}
+
+model SickBayRecord {
+  id        String   @id @default(cuid())
+  studentId String
+  complaint String
+  roomRef   String?
+  status    String
+  since     DateTime
+  dischargedAt DateTime?
+}
+
+model LetterTemplate {
+  id       String @id @default(cuid())
+  key      String @unique
+  name     String
+  language String
+  content  String
+  version  Int    @default(1)
+}
+
+model GeneratedLetter {
+  id         String   @id @default(cuid())
+  templateId String
+  variables  Json
+  fileKey    String?
+  createdById String
+  createdAt  DateTime @default(now())
+}
+
+model CommunicationThread {
+  id        String    @id @default(cuid())
+  subject   String
+  studentId String?
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Message {
+  id        String              @id @default(cuid())
+  threadId  String
+  thread    CommunicationThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User                @relation("MessageSender", fields: [senderId], references: [id])
+  body      String
+  isAutomated Boolean           @default(false)
+  createdAt DateTime            @default(now())
+}
+
+model BiometricEvent {
+  id         String             @id @default(cuid())
+  type       BiometricEventType
+  subjectId  String
+  deviceRef  String?
+  mode       String             @default("mock")
+  metadata   Json?
+  createdAt  DateTime           @default(now())
+}
+
+model AiConversation {
+  id        String      @id @default(cuid())
+  userId    String?
+  agentKey  String
+  locale    String      @default("mr")
+  messages  AiMessage[]
+  createdAt DateTime    @default(now())
+}
+
+model AiMessage {
+  id             String         @id @default(cuid())
+  conversationId String
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String
+  content        String
+  createdAt      DateTime       @default(now())
+}
+
+model AiAgentRun {
+  id        String   @id @default(cuid())
+  agentKey  String
+  input     Json?
+  output    Json?
+  status    String
+  latencyMs Int?
+  createdAt DateTime @default(now())
+}
+
+model MaintenanceTask {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  severity    String
+  status      String   @default("open")
+  suggestion  Json?
+  createdAt   DateTime @default(now())
+}
+
+model SystemLockdown {
+  id        String   @id @default(cuid())
+  active    Boolean  @default(false)
+  reason    String?
+  activatedById String?
+  activatedAt DateTime?
+}
