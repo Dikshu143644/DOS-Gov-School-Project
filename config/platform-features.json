@@ -1,0 +1,66 @@
+{
+  "version": "0.1.0",
+  "updated": "2026-08-10",
+  "note": "Features marked requiresPaidService or requiresApiKey are planned — not active until school approval and credentials.",
+  "features": [
+    {
+      "id": "aadhaar-production",
+      "name": "Aadhaar Production Identity Verification",
+      "status": "planned",
+      "requiresApiKey": true,
+      "requiresPaidService": true,
+      "requiredCredentials": ["UIDAI-approved AUA/ASA integration", "Identity verification provider contract", "Legal consent workflow"],
+      "devMode": "MOCK_IDENTITY_VERIFICATION (clearly labelled in UI)"
+    },
+    {
+      "id": "autonomous-deploy-agent",
+      "name": "Autonomous Maintenance / Deploy Agent",
+      "status": "planned",
+      "requiresApiKey": true,
+      "requiresPaidService": false,
+      "requiredCredentials": ["CI/CD tokens (GitHub/GitLab)", "Cloud deploy service account", "Human approval gate enforced"],
+      "safeguards": ["PR-only", "No direct production write without approval"]
+    },
+    {
+      "id": "district-mis-dashboards",
+      "name": "District MIS Dashboards (ITDP / block level)",
+      "status": "planned",
+      "requiresApiKey": false,
+      "requiresPaidService": false,
+      "requiredCredentials": ["Role-based access agreement with ITDP Raigad", "Report format mapping to district templates"]
+    },
+    {
+      "id": "google-sheets-two-way-sync",
+      "name": "Deep Google Sheets Two-Way Sync",
+      "status": "planned",
+      "requiresApiKey": true,
+      "requiresPaidService": false,
+      "requiredCredentials": ["Google Cloud project", "OAuth client ID/secret", "Google Workspace admin consent", "Sheets API enabled"]
+    },
+    {
+      "id": "whatsapp-notifications",
+      "name": "WhatsApp Notifications",
+      "status": "planned",
+      "requiresApproval": true,
+      "requiresApiKey": true,
+      "requiresPaidService": true,
+      "requiredCredentials": ["WhatsApp Business API provider (e.g. Meta Cloud API)", "Approved message templates", "School policy sign-off"]
+    },
+    {
+      "id": "register-digitization",
+      "name": "Legacy Register Digitization",
+      "status": "in_design",
+      "requiresApiKey": false,
+      "requiresPaidService": false,
+      "note": "Mandatory — maps existing paper registers to structured modules with audit."
+    },
+    {
+      "id": "saral-udise-export",
+      "name": "SARAL / UDISE+ Alignment Export",
+      "status": "planned",
+      "requiresApiKey": false,
+      "requiresPaidService": false,
+      "note": "Complement state portal; avoid duplicate source of truth."
+    }
+  ]
+}

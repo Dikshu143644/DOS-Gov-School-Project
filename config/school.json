@@ -1,0 +1,79 @@
+{
+  "identity": {
+    "nameEn": "Government Secondary & Higher Secondary Ashram School, Pathraj",
+    "nameFullEn": "Government Secondary & Higher Secondary Ashram School, Pathraj, Taluka Karjat, District Raigad, Maharashtra",
+    "nameMr": "शासकीय माध्यमिक व उच्च माध्यमिक आश्रमशाळा, पथराज",
+    "taluka": "Karjat",
+    "talukaMr": "कर्जत",
+    "district": "Raigad",
+    "districtMr": "रायगड",
+    "state": "Maharashtra",
+    "udiseCode": "27240210901",
+    "medium": "Marathi only",
+    "classes": "1st to 12th Standard",
+    "streams": {
+      "11": ["Arts"],
+      "12": ["Arts"]
+    }
+  },
+  "contact": {
+    "emails": [
+      {
+        "id": "primary",
+        "label": "School Office",
+        "address": "hmpathraj22@gmail.com",
+        "isPrimary": true
+      }
+    ],
+    "phones": [
+      {
+        "id": "primary-contact",
+        "label": "School Contact",
+        "number": "+91 7666971183",
+        "display": "7666971183",
+        "isPrimary": true,
+        "editableByRole": ["platform_admin", "principal", "clerk"]
+      }
+    ],
+    "addressLines": [
+      "Pathraj, Taluka Karjat",
+      "District Raigad, Maharashtra"
+    ]
+  },
+  "academicStructure": {
+    "medium": ["Marathi"],
+    "standards": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "divisionAxes": [
+      {
+        "key": "residence",
+        "labelEn": "Day Scholar / Hostel",
+        "values": ["day_scholar", "hostel"]
+      },
+      {
+        "key": "gender",
+        "labelEn": "Boys / Girls",
+        "values": ["boys", "girls"]
+      }
+    ],
+    "divisionCombinations": [
+      { "code": "DS-B", "labelEn": "Day Scholar — Boys" },
+      { "code": "DS-G", "labelEn": "Day Scholar — Girls" },
+      { "code": "H-B", "labelEn": "Hostel — Boys" },
+      { "code": "H-G", "labelEn": "Hostel — Girls" }
+    ],
+    "higherSecondary": {
+      "11": { "streams": ["Arts"], "medium": "Marathi" },
+      "12": { "streams": ["Arts"], "medium": "Marathi" }
+    }
+  },
+  "governance": {
+    "dataOwnership": "School legally owns student data and public website content.",
+    "governmentAccess": "ITDP Raigad / Tribal Development Department may access data only with documented permission and audit trail.",
+    "admissionAuthorities": ["Principal", "Admission Committee", "School Management Committee (as applicable)"]
+  },
+  "hosting": {
+    "model": "hybrid",
+    "cloud": "MeitY empanelled cloud (production workloads)",
+    "onPrem": "On-premises (sensitive registers, backup, optional offline capture)"
+  }
+}
