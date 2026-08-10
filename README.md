@@ -64,6 +64,32 @@ The application will be available at [http://localhost:3000](http://localhost:30
 ### Feature Flags
 Certain features (like live UIDAI Aadhaar verification, real WhatsApp API integration, and physical Biometric Hardware webhooks) are currently operating in **MOCK MODE** behind feature flags. Once the production API keys are acquired from the respective government and cloud providers, they can be inserted into the `.env` file to activate live production mode.
 
+### ⚙️ Environment Configuration (`.env`)
+To run this project locally or in production, create a `.env` file in the root directory and configure the following variables:
+
+```env
+# Database & Cache
+DATABASE_URL="postgresql://user:password@localhost:5432/ashram_db?schema=public"
+REDIS_URL="redis://localhost:6379"
+
+# Security
+JWT_SECRET="your-secure-jwt-secret-key"
+NEXTAUTH_SECRET="your-nextauth-secret-key"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Third-Party APIs (Production)
+UIDAI_API_KEY=""         # For Aadhaar Authentication
+WHATSAPP_API_KEY=""      # For Parent Communication Alerts
+GOOGLE_CLIENT_ID=""      # For Google Workspace Sync (Sheets/Calendar)
+GOOGLE_CLIENT_SECRET=""
+
+# AI ADK Integration
+GOOGLE_VERTEX_API_KEY="" # For Gemini/Vertex AI Agents
+
+# Hardware Integration
+BIOMETRIC_API_KEY=""     # Secure webhook token for hardware biometric scanners
+```
+
 ---
 
 *Built with ❤️ for the students of Pathraj.*
