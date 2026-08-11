@@ -54,7 +54,7 @@ export default function TeacherDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Timetable */}
         <div className="glass-card p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Today's Schedule</h3>
+          <h3 className="text-lg font-semibold text-white mb-4">Today&apos;s Schedule</h3>
           <div className="space-y-4 relative before:absolute before:inset-y-0 before:left-[19px] before:w-px before:bg-[var(--color-border)]">
             
             <div className="flex gap-4 relative">
