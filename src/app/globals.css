@@ -1,16 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --color-twilight: #0a0e1a;
-  --color-navy-deep: #0f1628;
-  --color-crimson: #8b1538;
-  --color-pomegranate: #a8223a;
-  --color-ember: #c45c3e;
-  --color-gold-inst: #c9a962;
-  --color-mist: #1a2438;
-  --color-surface-glass: rgb(255 255 255 / 0.06);
-  --font-display: "Segoe UI", system-ui, sans-serif;
-  --font-body: "Segoe UI", system-ui, sans-serif;
+  --font-inter: var(--font-inter);
+  --font-mukta: var(--font-mukta);
+  
+  /* Deep Navy / Slate Foundation */
+  --color-navy-900: #0B1120;
+  --color-navy-800: #0F172A;
+  --color-navy-700: #1E293B;
+  --color-navy-600: #334155;
+  
+  /* Subtle Emerald Accents */
+  --color-emerald-500: #10B981;
+  --color-emerald-400: #34D399;
+  
+  /* Refined Gold Highlights */
+  --color-gold-500: #D4AF37;
+  --color-gold-400: #F3E5AB;
+
+  /* Semantic Colors */
+  --color-background: var(--color-navy-900);
+  --color-surface: var(--color-navy-800);
+  --color-surface-hover: var(--color-navy-700);
+  --color-border: rgba(255,255,255,0.1);
+  --color-text: #F8FAFC;
+  --color-text-muted: #94A3B8;
+  
+  --color-success: var(--color-emerald-500);
+  --color-warning: var(--color-gold-500);
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
 }
 
 html {
@@ -18,30 +37,56 @@ html {
 }
 
 body {
-  background: var(--color-twilight);
-  color: #e8eaef;
-  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+/* Typography Utilities */
+.font-marathi {
+  font-family: var(--font-mukta), sans-serif;
 }
 
-.glass-panel {
-  background: var(--color-surface-glass);
-  border: 1px solid rgb(255 255 255 / 0.08);
-  backdrop-filter: blur(12px);
+/* Reusable UI Components */
+.glass-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+  border-radius: 0.75rem;
 }
 
-.text-gradient-gold {
-  background: linear-gradient(135deg, #e8dcc0, var(--color-gold-inst));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.primary-button {
+  background-color: var(--color-emerald-500);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.section-anchor {
-  scroll-margin-top: 5rem;
+.primary-button:hover {
+  background-color: var(--color-emerald-400);
+}
+
+.secondary-button {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.secondary-button:hover {
+  background-color: var(--color-surface-hover);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
 }

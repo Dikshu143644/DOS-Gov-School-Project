@@ -1,39 +1,34 @@
 import { NextResponse } from 'next/server';
 
 // ADK (Agent Development Kit) Integration Router
+// Proxies requests to the Python FastAPI Microservice
 export async function POST(request: Request) {
   try {
-    const { agentType, prompt, context } = await request.json();
+    const payload = await request.json();
 
-    // In production, this connects to Google Cloud Vertex AI / Gemini API
-    // Feature Flagged Mock Response for now:
-    await new Promise(r => setTimeout(r, 1000));
+    // Use localhost in dev, or the Python service URL in production (e.g. docker container name)
+    const pythonAdkUrl = process.env.PYTHON_ADK_URL || 'http://localhost:8000/agent/invoke';
 
-    let responseContent = "";
+    const response = await fetch(pythonAdkUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
 
-    switch (agentType) {
-      case "student_assistant":
-        responseContent = "I can help you with your homework or explain the syllabus. What do you need?";
-        break;
-      case "admission_assistant":
-        responseContent = "Your application is under review. The hostel allocation will be published on the 15th.";
-        break;
-      case "document_assistant":
-        responseContent = "The Aadhaar card scan looks clean. All security markers verified.";
-        break;
-      case "security_sentinel":
-        responseContent = "Session analyzed. No anomalies detected in current geographic bounding box.";
-        break;
-      default:
-        responseContent = "Agent type not recognized by ADK Router.";
+    if (!response.ok) {
+      throw new Error(`Python ADK Service returned ${response.status}`);
     }
 
-    return NextResponse.json({
-      status: "success",
-      agent: agentType,
-      response: responseContent
-    });
+    const data = await response.json();
+
+    return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json({ status: "error", message: "ADK Router failed to respond." }, { status: 500 });
+    console.error("ADK Router Error:", error);
+    return NextResponse.json(
+      { status: "error", message: "ADK Router failed to reach Python Microservice." }, 
+      { status: 500 }
+    );
   }
 }

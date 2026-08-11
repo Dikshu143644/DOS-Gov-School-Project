@@ -1,96 +1,132 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import { Users, GraduationCap, CheckSquare, Award, Clock, FileText } from "lucide-react";
 
 export default function TeacherDashboard() {
-  const [activeTab, setActiveTab] = useState("class");
-
-  const students = [
-    { id: 1, roll: 101, name: "Rahul Sharma", attendance: "98%", grade: "A" },
-    { id: 2, roll: 102, name: "Sneha Jadhav", attendance: "95%", grade: "A+" },
-    { id: 3, roll: 103, name: "Kiran Pawar", attendance: "82%", grade: "B" },
-    { id: 4, roll: 104, name: "Amit Deshmukh", attendance: "91%", grade: "A" },
-  ];
-
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="mb-8 flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-bold text-white drop-shadow-sm">Teacher Classroom</h1>
-          <p className="mt-2 text-white/60">Class Teacher Access: 11th Standard (Arts)</p>
-        </div>
-        <div className="px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-lg text-sm text-green-400 font-medium">
-          Access Level: Full (Read/Write)
+    <div className="animate-fade-in">
+      {/* Hero Header */}
+      <div className="relative w-full h-32 rounded-2xl overflow-hidden mb-8 border border-[var(--color-border)] shadow-lg shadow-[var(--color-background)]/50">
+        <Image 
+          src="/assets/teacher_bg.png" 
+          alt="Teacher Workspace Background" 
+          fill 
+          className="object-cover opacity-80"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-background)] via-[var(--color-background)]/80 to-transparent" />
+        <div className="absolute inset-y-0 left-8 flex flex-col justify-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--color-emerald-500)]/20 text-[var(--color-emerald-400)] text-xs font-semibold mb-2 border border-[var(--color-emerald-500)]/30 backdrop-blur-sm w-fit">
+            Class 10-A Assigned
+          </div>
+          <h1 className="text-3xl font-bold text-white drop-shadow-sm font-marathi">Teacher Workspace</h1>
+          <p className="mt-1 text-[var(--color-text-muted)] font-marathi">Classroom management, attendance, and academics.</p>
         </div>
       </div>
 
-      <div className="flex gap-4 mb-6 border-b border-white/10 pb-4 overflow-x-auto">
-        <button 
-          onClick={() => setActiveTab("class")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'class' ? 'bg-white/10 text-white border border-white/20 shadow-lg' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-        >
-          My Classroom (11th Arts)
-        </button>
-        <button 
-          onClick={() => setActiveTab("attendance")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === 'attendance' ? 'bg-white/10 text-white border border-white/20 shadow-lg' : 'text-white/50 hover:text-white hover:bg-white/5'}`}
-        >
-          Daily Attendance
-        </button>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="glass-card p-6 flex flex-col justify-center items-center text-center group cursor-pointer hover:border-[var(--color-emerald-500)]/50 transition-colors">
+          <div className="w-12 h-12 rounded-full bg-[var(--color-emerald-500)]/10 text-[var(--color-emerald-400)] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <CheckSquare className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-semibold text-white">Mark Attendance</h3>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">Daily roster for 10-A</p>
+        </div>
+
+        <div className="glass-card p-6 flex flex-col justify-center items-center text-center group cursor-pointer hover:border-[var(--color-info)]/50 transition-colors">
+          <div className="w-12 h-12 rounded-full bg-[var(--color-info)]/10 text-[var(--color-info)] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <Award className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-semibold text-white">Update Grades</h3>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">Unit Test 2 marks pending</p>
+        </div>
+
+        <div className="glass-card p-6 flex flex-col justify-center items-center text-center group cursor-pointer hover:border-[var(--color-gold-500)]/50 transition-colors">
+          <div className="w-12 h-12 rounded-full bg-[var(--color-gold-500)]/10 text-[var(--color-gold-400)] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+            <FileText className="w-6 h-6" />
+          </div>
+          <h3 className="text-lg font-semibold text-white">Study Materials</h3>
+          <p className="text-xs text-[var(--color-text-muted)] mt-1">Upload notes & assignments</p>
+        </div>
       </div>
 
-      {activeTab === "class" && (
-        <div className="glass-panel rounded-2xl border border-white/10 bg-white/5 overflow-hidden backdrop-blur-xl shadow-2xl">
-          <div className="p-4 border-b border-white/10 bg-black/20 flex justify-between items-center">
-            <h3 className="font-semibold text-white">Student Roster</h3>
-            <span className="bg-white/10 text-white/70 text-xs font-bold px-2.5 py-1 rounded-full">{students.length} Students</span>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-white/70">
-              <thead className="bg-black/40 text-xs uppercase text-white/50 border-b border-white/10">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Roll No</th>
-                  <th className="px-6 py-4 font-medium">Student Name</th>
-                  <th className="px-6 py-4 font-medium">Attendance</th>
-                  <th className="px-6 py-4 font-medium">Current Grade</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {students.map((student) => (
-                  <tr key={student.id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 text-white font-medium">{student.roll}</td>
-                    <td className="px-6 py-4 text-white">{student.name}</td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${parseInt(student.attendance) > 90 ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}`}>
-                        {student.attendance}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">{student.grade}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="text-blue-400 hover:text-blue-300 transition-colors mr-3">Update Marks</button>
-                      <button className="text-white/40 hover:text-white transition-colors">View Profile</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Timetable */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold text-white mb-4">Today's Schedule</h3>
+          <div className="space-y-4 relative before:absolute before:inset-y-0 before:left-[19px] before:w-px before:bg-[var(--color-border)]">
+            
+            <div className="flex gap-4 relative">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-emerald-500)]/20 border-4 border-[var(--color-surface)] flex items-center justify-center shrink-0 z-10">
+                <Clock className="w-4 h-4 text-[var(--color-emerald-400)]" />
+              </div>
+              <div className="flex-1 bg-[var(--color-surface-hover)]/30 border border-[var(--color-border)] rounded-xl p-3">
+                <div className="flex justify-between items-start">
+                  <h4 className="text-sm font-medium text-white">10-A (Mathematics)</h4>
+                  <span className="text-xs text-[var(--color-text-muted)]">08:30 AM</span>
+                </div>
+                <p className="text-xs text-[var(--color-emerald-400)] mt-1 font-medium">Ongoing</p>
+              </div>
+            </div>
 
-      {activeTab === "attendance" && (
-        <div className="glass-panel rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl flex flex-col items-center justify-center text-center min-h-[300px]">
-          <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center text-white/50 mb-4">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            <div className="flex gap-4 relative">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-hover)] border-4 border-[var(--color-surface)] flex items-center justify-center shrink-0 z-10">
+                <Clock className="w-4 h-4 text-[var(--color-text-muted)]" />
+              </div>
+              <div className="flex-1 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl p-3">
+                <div className="flex justify-between items-start">
+                  <h4 className="text-sm font-medium text-white">9-B (Science)</h4>
+                  <span className="text-xs text-[var(--color-text-muted)]">09:30 AM</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 relative">
+              <div className="w-10 h-10 rounded-full bg-[var(--color-surface-hover)] border-4 border-[var(--color-surface)] flex items-center justify-center shrink-0 z-10">
+                <Clock className="w-4 h-4 text-[var(--color-text-muted)]" />
+              </div>
+              <div className="flex-1 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl p-3">
+                <div className="flex justify-between items-start">
+                  <h4 className="text-sm font-medium text-white">10-A (Geometry)</h4>
+                  <span className="text-xs text-[var(--color-text-muted)]">11:00 AM</span>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">Biometric Attendance Sync</h3>
-          <p className="text-sm text-white/50 max-w-md mx-auto mb-6">Attendance is automatically synced from the biometric devices managed by the ADK. You can override or submit manual leave requests here.</p>
-          <button className="px-6 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-all">
-            Manual Override Request
-          </button>
         </div>
-      )}
+
+        {/* Student Highlights */}
+        <div className="glass-card p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-white">Student Alerts (10-A)</h3>
+            <button className="text-xs text-[var(--color-emerald-400)] hover:text-white transition-colors">View Roster</button>
+          </div>
+          
+          <div className="space-y-3">
+            <div className="p-3 rounded-xl border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/5 flex gap-3 items-center">
+              <div className="w-8 h-8 rounded-full bg-[var(--color-warning)]/20 flex items-center justify-center text-[var(--color-warning)]">
+                <Users className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-white">Low Attendance Warning</h4>
+                <p className="text-xs text-[var(--color-text-muted)] mt-0.5">3 students below 75% this month.</p>
+              </div>
+            </div>
+            
+            <div className="p-3 rounded-xl border border-[var(--color-info)]/30 bg-[var(--color-info)]/5 flex gap-3 items-center">
+              <div className="w-8 h-8 rounded-full bg-[var(--color-info)]/20 flex items-center justify-center text-[var(--color-info)]">
+                <GraduationCap className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-white">Science Project Due</h4>
+                <p className="text-xs text-[var(--color-text-muted)] mt-0.5">Remind class tomorrow.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
