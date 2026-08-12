@@ -71,8 +71,7 @@ export default function Home() {
                  Pathraj • Raigad
                </div>
                <div className="h-[500px] w-full bg-[#1a0b10] rounded-2xl flex flex-col items-center justify-center border border-white/5 relative overflow-hidden">
-                 {/* Placeholder for Dusk Campus Image */}
-                 <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')] bg-cover bg-center mix-blend-overlay"></div>
+                 <div className="absolute inset-0 opacity-40 bg-[url('/images/hero_background.png')] bg-cover bg-center mix-blend-overlay"></div>
                  <div className="relative z-10 p-8 text-center">
                    <div className="h-20 w-20 mx-auto rounded-full bg-[#8b1538]/20 border border-[#8b1538]/40 flex items-center justify-center text-[#ff8ba7] mb-4">
                      <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
@@ -97,6 +96,44 @@ export default function Home() {
 
         </div>
       </main>
+
+      {/* About Section */}
+      <section id="about" className="relative py-24 min-h-[60vh] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/about_background.png" alt="About Background" layout="fill" objectFit="cover" className="opacity-30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0406] via-[#0a0406]/80 to-transparent"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">About Ashram</h2>
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
+            Our mission is to provide quality education and a nurturing environment for tribal students, helping them grow academically and personally.
+          </p>
+        </div>
+      </section>
+
+      {/* Campus Section */}
+      <section id="campus" className="relative py-24 min-h-[70vh] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <Image src="/images/campus_background.png" alt="Campus Background" layout="fill" objectFit="cover" className="opacity-30" />
+          <div className="absolute inset-0 bg-[#0a0406]/60 backdrop-blur-sm"></div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4">Campus Gallery</h2>
+            <p className="text-white/70">A glimpse into our beautiful facilities</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
+              <h3 className="text-xl font-semibold mb-2">Modern Classrooms</h3>
+              <p className="text-sm text-white/60">Equipped with the latest technology to facilitate engaging learning experiences.</p>
+            </div>
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
+              <h3 className="text-xl font-semibold mb-2">Sports Facilities</h3>
+              <p className="text-sm text-white/60">Extensive grounds for physical education and extracurricular activities.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
